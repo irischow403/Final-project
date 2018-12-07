@@ -1,0 +1,86 @@
+---
+title: "Final Project"
+author: "Tsz Yau Iris Chow"
+date: "November 25, 2018"
+output: html_document
+---
+
+
+My final proect is about death causes of U.S. citizens. I aim to sort out the leading death cause and create a bar graph to show the fact more clearly.
+
+If time allowed, I would like to include a set of health data that shows relationship wth the leading death causes.
+
+
+```{r}
+#load require package
+rm(list = ls())
+library(DataComputing)
+library(mosaic)
+library(tidyverse)
+```
+
+```{r}
+#Data table of leading causes of deaths
+
+leadingcauses <- read.csv("C:/Users/Iris/Downloads/NCHS_-_Leading_Causes_of_Death__United_States.csv", header = TRUE)
+
+#structure of the data set
+str(leadingcauses)
+
+```
+
+```{r}
+head(leadingcauses)
+```
+
+It seems like the leading causes of death is accidents. Let's see if the result will change after we tidy up the data. Or let's see what other causes will lead to death
+
+
+```{r}
+leadingcauses %>%
+  head(6)
+```
+#data wrangling
+#facet for gender
+```{r}
+#count how many cases we have
+leadingcauses %>%
+  summarise(count = n())
+```
+
+```{r}
+#see how many variables we have
+names(leadingcauses)
+```
+
+
+```{r}
+#modify data 
+as.character(leadingcauses$Cause.Name)
+  
+#filter data
+filtered <- 
+  leadingcauses %>% 
+  filter(Cause.Name %in% c("Alzheimer's disease", "Cancer", "CLRD", "Diabetes", "Heart disease")) 
+# inspect data agian
+filtered %>%
+  head(10)
+```
+
+```{r}
+#use ggplot to plot data
+ggplot(data=filtered,aes(x=Cause.Name,y=Deaths ))+geom_bar(stat='identity',position='stack', width=.9) 
+
+```
+We can see from this bar chart, Cancer and Heart Disease are the two main cause of death
+
+###More wrangling and graph
+Apart from what is the main cause, I also want to see how many people die each year
+```{r}
+#plot data
+ggplot(data=leadingcauses,aes(x=Year,y=Deaths ))+geom_bar(stat='identity',position='stack', width=.9) 
+
+```
+Looks like this graph is not worth seeing because it does not show changes over years.
+
+
