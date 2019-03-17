@@ -1,15 +1,14 @@
 ---
-title: "Final Project"
+title: "Death Causes and Life Expectancy"
 author: "Tsz Yau Iris Chow"
-date: "November 25, 2018"
+date: "16th March, 19"
 output: html_document
 ---
 
 
 My final proect is about death causes of U.S. citizens. I aim to sort out the leading death cause and create a bar graph to show the fact more clearly.
 
-If time allowed, I would like to include a set of health data that shows relationship wth the leading death causes.
-
+If time allowed, I would like to include a set of health data that is about life expectancy
 
 ```{r}
 #load require package
@@ -28,6 +27,9 @@ leadingcauses <- read.csv("C:/Users/Iris/Downloads/NCHS_-_Leading_Causes_of_Deat
 str(leadingcauses)
 
 ```
+```{r}
+leadingcauses[, ]
+```
 
 ```{r}
 head(leadingcauses)
@@ -40,8 +42,7 @@ It seems like the leading causes of death is accidents. Let's see if the result 
 leadingcauses %>%
   head(6)
 ```
-#data wrangling
-#facet for gender
+
 ```{r}
 #count how many cases we have
 leadingcauses %>%
@@ -72,15 +73,69 @@ filtered %>%
 ggplot(data=filtered,aes(x=Cause.Name,y=Deaths ))+geom_bar(stat='identity',position='stack', width=.9) 
 
 ```
-We can see from this bar chart, Cancer and Heart Disease are the two main cause of death
+(Disclaimer: CLRD stands for Chronic Lower Respiratory Disease) 
 
-###More wrangling and graph
-Apart from what is the main cause, I also want to see how many people die each year
+ For simplicity, I only picked a few causes that I want to discuss. As we can see from this bar chart, Cancer and Heart Disease are the two main cause of death.The data reflects the number of people died from heart disease outweight Cancer. This is very interesting because we always thought cancer is incurable and we usually thought the opposite from the data set.How can people die from heart disease while we seems to be obsessed with healthy living style?
+ 
+ We are definitely looking things in the wrong way if we think we are healthy. A lot more people are having symtoms like diebetes, physical inactivity and unbalanced diet. Those are the contributers for heart disease that's why a lot of people dying from heart disease even though medical technique is getting advance.
+ 
 ```{r}
-#plot data
-ggplot(data=leadingcauses,aes(x=Year,y=Deaths ))+geom_bar(stat='identity',position='stack', width=.9) 
+heart_disease <- 
+  leadingcauses %>% 
+  filter(Cause.Name %in% c("Heart disease")) %>%
+  filter(State %in% c("United States"))
 
 ```
-Looks like this graph is not worth seeing because it does not show changes over years.
+
+
+
+```{r}
+  heart_disease %>%
+ggplot(aes(x = Year, y = Deaths )) + 
+  geom_line(size = 1, alpha = 0.5) + 
+  ylab("Deaths") + xlab("Year")
+ 
+```
+
+Surprisingly, the number of people that die from heart disease was decreasing until 2010. The trend in these years are increasing! We do need to watch out for that. However, this trend seems to be continully increasing!
+
+###More wrangling and graphing
+Apart from what is the main cause, I also want to see how many people die each year
+
+
+```{r}
+life_expectancy <- read.csv("C:/Users/Iris/Downloads/NCHS_-_Death_rates_and_life_expectancy_at_birth (1).csv")
+str(life_expectancy)
+```
+
+```{r}
+#plotti
+life_expectancy %>%
+  
+  ggplot(aes(x = Year, y = Average.Life.Expectancy..Years. )) + 
+  geom_line(size = 1, alpha = 0.5) + 
+  ylab("Life Expectancy") + xlab("Year")
+```
+This line graph clearly shows that the life expectancy is increasing over the years. If you observe the graph more closely, there is a significant drop in 1939 to 1945. This this because of World War II.
+
+Overall, life expectancy is increasing because of advancements of medicine, improved elder care, better life planning like buying insurance, savings, and more properous, protected environment all lead to expanded life expectancy.
+
+```{r}
+ 
+Sex <-
+life_expectancy %>%
+  filter(Sex %in% c("Male", "Female"))
+  
+Sex %>%
+  ggplot(aes(x = Year, y = Average.Life.Expectancy..Years. )) + 
+  geom_line(size = 1, alpha = 0.5) + 
+  aes(linetype = Sex) +
+  ylab("Life Expectancy") + xlab("Year") 
+```
+
+This graph shows female has a longer life expectancy in general. It is possibly because of biological factors, living style,environmental factors. We do not know which affect the most but we did find some evidence. The first one is there are more man smoke that leads to higher mortality rate in man. Also, man's organ tend to have more fat surrounded while women like to store fat directly under the skin. Those are just few of the causes.
+
+###Conclusion
+After inspecting two sets of data, we found out the promenent causes of death and the trend of number of people die from heart disease. Moreover, we anaylsed life expectancy and tried to explain through one of the explanatory variable- Sex.
 
 
